@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { EntityManager, Repository } from 'typeorm';
@@ -15,16 +15,28 @@ export class UserService {
   ){}
 
   async create(createUserDto: CreateUserDto) {
-    const user = new Users(createUserDto);
-    return await this.entityManager.save(user);
+    try {
+      const user = this.usersRepository.create(createUserDto);
+      return await this.usersRepository.save(user);
+    } catch (error) {
+      if (error.code === '23505') { // error code for unique violations
+        if (error.detail.includes('email')) {
+          throw new ConflictException('A user with this email already exists.');
+        }
+        if (error.detail.includes('phone_number')) {
+          throw new ConflictException('A user with this phone number already exists.');
+        }
+      }
+      throw error;
+    }
   }
 
   async findAll() {
-    return this.usersRepository.find();
+    return await this.usersRepository.find();
   }
 
   async findOne(id: number) {
-    return this.usersRepository.findOneBy({id});
+    return await this.usersRepository.findOneBy({id});
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
@@ -40,4 +52,13 @@ export class UserService {
   async remove(id: number) {
     return await this.usersRepository.delete(id);
   }
+
+  async findByEmail(email: string): Promise<Users | null> {
+    try {
+      return await this.usersRepository.findOneBy({ email});
+    } catch (error) {
+      throw new Error("Internal Server Error");
+    }
+  }
+  
 }

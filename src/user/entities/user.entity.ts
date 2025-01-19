@@ -1,10 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn, Unique, Check } from "typeorm";
+import { Route } from "src/routes/entities/route.entity";
+import { Column, Entity, PrimaryGeneratedColumn, Unique, Check, ManyToMany } from "typeorm";
+import { providerType } from "../provider.enum";
 
 @Entity('users')
 @Unique(['phone_number'])
 @Unique(['email'])
-@Check('email ~* \'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$\'')
-@Check('phone_number ~* \'^\\+?[1-9][0-9]{7,14}$\'')
 export class Users {
     @PrimaryGeneratedColumn()
     id: number;
@@ -35,6 +35,12 @@ export class Users {
     // URL for photo
     @Column({ nullable: true })
     photo: string;
+
+    @Column({type: 'enum', enum: providerType})
+    provider: providerType;
+
+    @ManyToMany(() => Route, (route) => route.users, {cascade:true })
+    routes: Route[];
 
     constructor(user: Partial<Users>){
         Object.assign(this, user);
