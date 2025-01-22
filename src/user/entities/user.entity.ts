@@ -1,6 +1,8 @@
 import { Route } from "src/routes/entities/route.entity";
-import { Column, Entity, PrimaryGeneratedColumn, Unique, Check, ManyToMany } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, Unique, Check, ManyToMany, JoinTable, OneToMany } from "typeorm";
 import { providerType } from "../provider.enum";
+import { Chat } from "src/chats/entities/chat.entity";
+import { Message } from "src/chats/entities/messages.entity";
 
 @Entity('users')
 @Unique(['phone_number'])
@@ -41,6 +43,13 @@ export class Users {
 
     @ManyToMany(() => Route, (route) => route.users, {cascade:true })
     routes: Route[];
+
+    @ManyToMany(() => Chat, (chat) => chat.participants, {cascade:true })
+    @JoinTable()
+    chats: Chat[];
+
+    @OneToMany(() => Message, (message) => message.chat, {cascade: true})
+    messages: Message[]; 
 
     constructor(user: Partial<Users>){
         Object.assign(this, user);

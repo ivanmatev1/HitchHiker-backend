@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, NotFoundException, BadRequestException } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -22,7 +22,7 @@ export class UserController {
     console.log("Email received:", email); 
 
     if (!email) {
-      throw new Error("Email query parameter is missing");
+      throw new BadRequestException('An email is required.');
     }
     const user = await this.userService.findByEmail(email); 
     if (!user) {

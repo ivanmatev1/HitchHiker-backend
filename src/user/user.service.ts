@@ -4,6 +4,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { EntityManager, Repository } from 'typeorm';
 import { Users } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CreateChatDto } from 'src/chats/dto/create-chat.dto';
+import { Chat } from 'src/chats/entities/chat.entity';
 
 @Injectable()
 export class UserService {
@@ -12,11 +14,15 @@ export class UserService {
     @InjectRepository(Users)
     private readonly usersRepository: Repository<Users>,
     private readonly entityManager: EntityManager
-  ){}
+  ) { }
 
   async create(createUserDto: CreateUserDto) {
     try {
-      const user = this.usersRepository.create(createUserDto);
+      const user = this.usersRepository.create({
+        ...createUserDto,
+        chats: [],
+        messages: [],
+      });
       return await this.usersRepository.save(user);
     } catch (error) {
       if (error.code === '23505') { // error code for unique violations
@@ -36,7 +42,10 @@ export class UserService {
   }
 
   async findOne(id: number) {
-    return await this.usersRepository.findOneBy({id});
+    return await this.usersRepository.findOne({ 
+      where: {id},
+      relations: {chats: true}
+     });
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
@@ -55,10 +64,10 @@ export class UserService {
 
   async findByEmail(email: string): Promise<Users | null> {
     try {
-      return await this.usersRepository.findOneBy({ email});
+      return await this.usersRepository.findOneBy({ email });
     } catch (error) {
       throw new Error("Internal Server Error");
     }
   }
-  
+
 }
