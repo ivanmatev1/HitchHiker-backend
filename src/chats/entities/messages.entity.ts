@@ -10,6 +10,9 @@ export class Message {
     @Column()
     text: string;
 
+    @Column({ type: 'timestamp' })
+    timestamp: Date
+
     @ManyToOne(() => Chat, (chat) => chat.messages)
     chat: Chat
 

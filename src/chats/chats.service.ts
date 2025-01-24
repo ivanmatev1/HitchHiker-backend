@@ -112,7 +112,7 @@ export class ChatsService {
   }
 
   async sendMessage(createMessageDto: createMessageDto, req: any) {
-    const { chatId, text } = createMessageDto;
+    const { chatId, text, timestamp } = createMessageDto;
 
     const chat = await this.chatRepository.findOne({
       where: { id: chatId },
@@ -140,6 +140,7 @@ export class ChatsService {
       text: text,
       chat:chat,
       sender: user,
+      timestamp: timestamp
     });
 
     return await this.messageRepository.save(message);

@@ -7,4 +7,6 @@ export class createMessageDto {
 
     @IsString()
     text: string;
+
+    timestamp: Date;
 }
