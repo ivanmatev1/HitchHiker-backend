@@ -1,7 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, Check, ManyToMany } from "typeorm";
-import { daysOfWeek } from '../daysOfWeek.enum';
-import { vehicleType } from '../vehicle.enum';
+import { Entity, Column, PrimaryGeneratedColumn, Check, ManyToMany, OneToMany, OneToOne, JoinColumn, ManyToOne } from "typeorm";
 import { Users } from "src/user/entities/user.entity";
+import { RouteStop } from "./routeStop.entity";
+import { Chat } from "src/chats/entities/chat.entity";
 
 Check('"seats">0')
 @Entity('routes')
@@ -9,35 +9,36 @@ export class Route {
     @PrimaryGeneratedColumn()
     id: number;
     
-    @Column()
-    start_location: string;
+    @OneToOne(() => RouteStop,  {cascade: true})
+    @JoinColumn()
+    start_location: RouteStop;
 
-    @Column()
-    end_location: string;
+    @OneToOne(() => RouteStop, {cascade: true})
+    @JoinColumn()
+    end_location: RouteStop;
+
+    @OneToMany(() => RouteStop, (routeStop) => routeStop.route, {cascade: true})
+    stops: RouteStop[];
+
     // date with hours
     @Column({ type: 'timestamp' })
-    begin_time: Date;
+    date: Date;
 
     @Column({default: false})
     completed: boolean;
-
-    @Column({default: false})
-    recurring: boolean;
     
     @Column()
-    seats: number;
-
-    @Column({type: 'enum', enum: daysOfWeek, nullable: true, array: true})
-    recurring_days_of_week: daysOfWeek[];
-
-    @Column({type: 'enum', enum: vehicleType})
-    vehicle: vehicleType;
-
-    @Column({type: 'text',array: true, nullable: true})
-    stops: string[];
+    passangers: number;
 
     @ManyToMany(() => Users, (user) => user.routes)
-    users: Users[];
+    participants: Users[];
+
+    @ManyToOne(() => Users, (creator) => creator.createdRoutes)
+    creator: Users;
+
+    @OneToOne(() => Chat ,{cascade: true, onDelete: 'CASCADE' })
+    @JoinColumn()
+    chat: Chat;
 
     constructor(user: Partial<Route>){
         Object.assign(this, user);

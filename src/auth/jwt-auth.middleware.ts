@@ -14,7 +14,7 @@ export class JwtAuthMiddleware {
     async use(socket: Socket, next: (err?: Error) => void): Promise<void> {
         try {
             const token = socket.handshake.auth.token ? socket.handshake.auth.token : socket.handshake.headers.token; // auth for app, header for postman
-
+            console.log('token: ', token);
             if (!token) {
                 throw new UnauthorizedException('Token not provided');
             }

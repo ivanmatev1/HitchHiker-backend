@@ -12,7 +12,7 @@ export class ChatsController {
   @Post()
   @UseGuards(AuthGuard)
   create(@Body() createChatDto: CreateChatDto, @Request() req) {
-    return this.chatsService.create(createChatDto, req);
+    return this.chatsService.create(req);
   }
 
   // will be removed later on

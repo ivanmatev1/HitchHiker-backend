@@ -1,23 +1,15 @@
-import { isEnum, IsEnum, IsPositive } from 'class-validator';
-import { daysOfWeek } from '../daysOfWeek.enum';
-import { vehicleType } from '../vehicle.enum';
+import { CreateRouteStopDto } from './create-route-stop.dto';
 
 export class CreateRouteDto {
-    start_location: string;
-    
-    end_location: string;
+    start_location: CreateRouteStopDto;
 
-    begin_time: Date;
+    end_location: CreateRouteStopDto;
+
+    stops: CreateRouteStopDto[];
+
+    date: Date;
 
     completed: boolean;
 
-    recurring: boolean;
-
-    @IsPositive()
-    seats: number;
-    
-    recurring_days_of_week: daysOfWeek[];
-
-    @IsEnum(vehicleType)
-    vehicle: vehicleType;
+    passangers: number;
 }

@@ -28,7 +28,6 @@ export class UserController {
     if (!user) {
       throw new NotFoundException(`User with email ${email} not found`);
     }
-
     return user;
   }
 

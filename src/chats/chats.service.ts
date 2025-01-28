@@ -20,7 +20,7 @@ export class ChatsService {
     private readonly entityManager: EntityManager
   ) { }
 
-  async create(createChatDto: CreateChatDto, req: any) {
+  async create( req: any) {
     try {
       const user = await this.userRepository.findOne({
         where: { id: req.user.id },
@@ -30,7 +30,6 @@ export class ChatsService {
         throw new Error('User not found');
       }
       const chat = this.chatRepository.create({
-        ...createChatDto,
         participants: [user],
         messages: [],
       });

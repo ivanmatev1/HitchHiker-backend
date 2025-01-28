@@ -20,6 +20,7 @@ export class AuthService {
                     const { password, ...result } = user;
                     return this.jwtService.signAsync(result);
                 }else{
+                    console.log("Password incorrect", password, user.password,"sas")
                     throw new Error("Password incorrect");
                 }
             }

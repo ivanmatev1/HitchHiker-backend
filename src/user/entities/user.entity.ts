@@ -10,7 +10,7 @@ import { Message } from "src/chats/entities/messages.entity";
 export class Users {
     @PrimaryGeneratedColumn()
     id: number;
-    // Data validations will be done in the frontend
+    
     @Column()
     first_name: string;
 
@@ -41,7 +41,8 @@ export class Users {
     @Column({type: 'enum', enum: providerType})
     provider: providerType;
 
-    @ManyToMany(() => Route, (route) => route.users, {cascade:true })
+    @ManyToMany(() => Route, (route) => route.participants, {cascade:true })
+    @JoinTable()
     routes: Route[];
 
     @ManyToMany(() => Chat, (chat) => chat.participants, {cascade:true })
@@ -50,6 +51,10 @@ export class Users {
 
     @OneToMany(() => Message, (message) => message.chat, {cascade: true})
     messages: Message[]; 
+
+    @OneToMany(() => Route, (route) => route.creator, {cascade: true})
+    createdRoutes: Route[]; 
+
 
     constructor(user: Partial<Users>){
         Object.assign(this, user);
