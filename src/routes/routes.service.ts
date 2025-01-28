@@ -129,7 +129,8 @@ export class RoutesService {
         stops: true,
         participants: true,
         creator: true,
-        chat: true
+        chat: true,
+        requests: true
       },
     });
   }

@@ -3,6 +3,7 @@ import { Column, Entity, PrimaryGeneratedColumn, Unique, Check, ManyToMany, Join
 import { providerType } from "../provider.enum";
 import { Chat } from "src/chats/entities/chat.entity";
 import { Message } from "src/chats/entities/messages.entity";
+import { RouteRequest } from "src/route-requests/entities/route-request.entity";
 
 @Entity('users')
 @Unique(['phone_number'])
@@ -54,6 +55,12 @@ export class Users {
 
     @OneToMany(() => Route, (route) => route.creator, {cascade: true})
     createdRoutes: Route[]; 
+
+    @OneToMany(() => RouteRequest, (request) => request.sender, {cascade: true})
+    sendedRequests: RouteRequest[]; 
+
+    @OneToMany(() => RouteRequest, (request) => request.receiver, {cascade: true})
+    receivedRequests: RouteRequest[]; 
 
 
     constructor(user: Partial<Users>){

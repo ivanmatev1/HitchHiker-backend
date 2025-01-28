@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, Check, ManyToMany, OneToMany, O
 import { Users } from "src/user/entities/user.entity";
 import { RouteStop } from "./routeStop.entity";
 import { Chat } from "src/chats/entities/chat.entity";
+import { RouteRequest } from "src/route-requests/entities/route-request.entity";
 
 Check('"seats">0')
 @Entity('routes')
@@ -39,6 +40,9 @@ export class Route {
     @OneToOne(() => Chat ,{cascade: true, onDelete: 'CASCADE' })
     @JoinColumn()
     chat: Chat;
+
+    @OneToMany(() => RouteRequest, (request) => request.route, {cascade: true})
+    requests: RouteRequest[];
 
     constructor(user: Partial<Route>){
         Object.assign(this, user);

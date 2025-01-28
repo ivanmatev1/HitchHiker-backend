@@ -10,9 +10,10 @@ import { Users } from 'src/user/entities/user.entity';
 import { Chat } from 'src/chats/entities/chat.entity';
 import { ChatsService } from 'src/chats/chats.service';
 import { Message } from 'src/chats/entities/messages.entity';
+import { RouteRequest } from 'src/route-requests/entities/route-request.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Route, RouteStop, Users, Chat, Message]),
+  imports: [TypeOrmModule.forFeature([Route, RouteStop, Users, Chat, Message, RouteRequest]),
   JwtModule.registerAsync({
     imports: [ConfigModule],
     useFactory: async (configService: ConfigService) => ({
