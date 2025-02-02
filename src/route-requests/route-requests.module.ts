@@ -7,9 +7,12 @@ import { Users } from 'src/user/entities/user.entity';
 import { RouteRequest } from './entities/route-request.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import { RoutesService } from 'src/routes/routes.service';
+import { RouteStop } from 'src/routes/entities/routeStop.entity';
+import { ChatsModule } from 'src/chats/chats.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([RouteRequest, Route, Users,]),
+  imports: [TypeOrmModule.forFeature([RouteRequest, Route, Users, RouteStop]),
   JwtModule.registerAsync({
     imports: [ConfigModule],
     useFactory: async (configService: ConfigService) => ({
@@ -18,8 +21,9 @@ import { JwtModule } from '@nestjs/jwt';
     }),
     inject: [ConfigService],
   }),
+    ChatsModule,
   ],
   controllers: [RouteRequestsController],
-  providers: [RouteRequestsService],
+  providers: [RouteRequestsService, RoutesService],
 })
 export class RouteRequestsModule { }

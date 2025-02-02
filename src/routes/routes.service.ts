@@ -181,18 +181,18 @@ export class RoutesService {
     return await this.entityManager.save(route);
   }
 
-  async addParticipant(addParticipantDto: AddParticipantDto, req: any) {
+  async addParticipant(addParticipantDto: AddParticipantDto, userId: number) {
     try {
       const route = await this.routesRepository.findOne({
         where: { id: addParticipantDto.routeId },
-        relations: { participants: true, creator: true },
+        relations: { participants: true, creator: true, chat: true },
       });
       if (!route) {
         throw new Error(`Route with ID ${addParticipantDto.routeId} not found`);
       }
 
       const user = await this.userRepository.findOne({
-        where: { id: req.user.id },
+        where: { id: userId },
       });
       if (!user) {
         throw new Error('User not found');
@@ -214,13 +214,55 @@ export class RoutesService {
       if (isAlreadyParticipant) {
         throw new Error('User is already a participant');
       }
-
       route.participants.push(userToAdd);
+      await this.chatsService.addParticipant(route.chat.id, userToAdd.id, user.id);
       return await this.entityManager.save(route);
     } catch (error) {
       throw new Error(error.message);
     }
   }
+
+  async removeParticipant(addParticipantDto: AddParticipantDto, userId: number) {
+    try {
+      const route = await this.routesRepository.findOne({
+        where: { id: addParticipantDto.routeId },
+        relations: { participants: true, creator: true, chat: true },
+      });
+      if (!route) {
+        throw new Error(`Route with ID ${addParticipantDto.routeId} not found`);
+      }
+
+      const user = await this.userRepository.findOne({ where: { id: userId } });
+      if (!user) {
+        throw new Error('User not found');
+      }
+      if (route.creator.id !== user.id) {
+        throw new Error('You are not the creator of this route');
+      }
+
+      const userToRemove = await this.userRepository.findOne({
+        where: { id: addParticipantDto.userId },
+      });
+      if (!userToRemove) {
+        throw new Error('User to be removed not found');
+      }
+
+      const participantIndex = route.participants.findIndex(
+        (participant) => participant.id === userToRemove.id,
+      );
+      if (participantIndex === -1) {
+        throw new Error('User is not a participant');
+      }
+
+      route.participants.splice(participantIndex, 1);
+      await this.chatsService.removeParticipant(route.chat.id, userToRemove.id, user.id);
+  
+      return await this.entityManager.save(route);
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
 
   async remove(id: number) {
     return await this.routesRepository.delete(id);

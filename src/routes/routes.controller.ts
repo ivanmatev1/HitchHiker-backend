@@ -18,7 +18,13 @@ export class RoutesController {
   @Patch('add-participant')
   @UseGuards(AuthGuard)
   async addParticipant(@Body() addParticipantDto: AddParticipantDto, @Request() req) {
-    return this.routesService.addParticipant(addParticipantDto, req);
+    return this.routesService.addParticipant(addParticipantDto, req.user.id);
+  }
+
+  @Patch('remove-participant')
+  @UseGuards(AuthGuard)
+  async removeParticipant(@Body() addParticipantDto: AddParticipantDto, @Request() req) {
+    return this.routesService.removeParticipant(addParticipantDto, req.user.id);
   }
 
   @Patch('complete/:id')

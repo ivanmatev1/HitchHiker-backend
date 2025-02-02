@@ -39,7 +39,7 @@ export class ChatsService {
     }
   }
 
-  async addParticipant(chatId: number, userId: number, req: any) {
+  async addParticipant(chatId: number, userId: number, creatorId: number) {
     try {
       const chat = await this.chatRepository.findOne({
         where: { id: chatId },
@@ -50,7 +50,7 @@ export class ChatsService {
       }
 
       const isUserInChat = chat.participants.some(
-        (participant) => participant.id === req.user.id,
+        (participant) => participant.id === creatorId,
       );
       if (!isUserInChat) {
         throw new Error('You are not a participant in this chat');
@@ -77,7 +77,7 @@ export class ChatsService {
     }
   }
 
-  async removeParticipant(chatId: number, userId: number, req: any) {
+  async removeParticipant(chatId: number, userId: number, creatorId: number) {
     try {
       const chat = await this.chatRepository.findOne({
         where: { id: chatId },
@@ -88,7 +88,7 @@ export class ChatsService {
       }
 
       const isUserInChat = chat.participants.some(
-        (participant) => participant.id === req.user.id,
+        (participant) => participant.id === creatorId,
       );
       if (!isUserInChat) {
         throw new Error('You are not a participant in this chat');

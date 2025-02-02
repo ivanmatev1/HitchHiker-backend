@@ -10,15 +10,15 @@ export class Route {
     @PrimaryGeneratedColumn()
     id: number;
     
-    @OneToOne(() => RouteStop,  {cascade: true})
+    @OneToOne(() => RouteStop,  {cascade: true, onDelete: 'CASCADE'})
     @JoinColumn()
     start_location: RouteStop;
 
-    @OneToOne(() => RouteStop, {cascade: true})
+    @OneToOne(() => RouteStop, {cascade: true, onDelete: 'CASCADE'})
     @JoinColumn()
     end_location: RouteStop;
 
-    @OneToMany(() => RouteStop, (routeStop) => routeStop.route, {cascade: true})
+    @OneToMany(() => RouteStop, (routeStop) => routeStop.route, {cascade: true, onDelete: 'CASCADE'})
     stops: RouteStop[];
 
     // date with hours
@@ -41,7 +41,7 @@ export class Route {
     @JoinColumn()
     chat: Chat;
 
-    @OneToMany(() => RouteRequest, (request) => request.route, {cascade: true})
+    @OneToMany(() => RouteRequest, (request) => request.route, {cascade: true, onDelete: 'CASCADE'})
     requests: RouteRequest[];
 
     constructor(user: Partial<Route>){

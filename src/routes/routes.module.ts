@@ -25,5 +25,6 @@ import { RouteRequest } from 'src/route-requests/entities/route-request.entity';
   ],
   controllers: [RoutesController],
   providers: [RoutesService, ChatsService],
+  exports: [RoutesService],
 })
 export class RoutesModule { }

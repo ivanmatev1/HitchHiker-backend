@@ -11,8 +11,12 @@ export class ChatsController {
 
   @Post()
   @UseGuards(AuthGuard)
-  create(@Body() createChatDto: CreateChatDto, @Request() req) {
-    return this.chatsService.create(req);
+  async create(@Body() createChatDto: CreateChatDto, @Request() req) {
+    try {
+      return await this.chatsService.create(req);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   // will be removed later on
@@ -23,15 +27,19 @@ export class ChatsController {
 
   @Get()
   @UseGuards(AuthGuard)
-  getPersonalChats(@Request() req) {
-    return this.chatsService.getPersonalChats(req.user.id);
+  async getPersonalChats(@Request() req) {
+    try {
+      return await this.chatsService.getPersonalChats(req.user.id);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   @Patch('/add-participant')
   @UseGuards(AuthGuard)
-  addUser(@Body() updateChatDto: UpdateChatDto, @Request() req) {
+  async addUser(@Body() updateChatDto: UpdateChatDto, @Request() req) {
     try {
-      const chat = this.chatsService.addParticipant(updateChatDto.chatId, updateChatDto.userId, req);
+      const chat = await this.chatsService.addParticipant(updateChatDto.chatId, updateChatDto.userId, req.user.id);
       return chat
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -40,9 +48,9 @@ export class ChatsController {
 
   @Patch('/remove-participant')
   @UseGuards(AuthGuard)
-  removeUser(@Body() updateChatDto: UpdateChatDto, @Request() req) {
+  async removeUser(@Body() updateChatDto: UpdateChatDto, @Request() req) {
     try {
-      const chat = this.chatsService.removeParticipant(updateChatDto.chatId, updateChatDto.userId, req);
+      const chat = this.chatsService.removeParticipant(updateChatDto.chatId, updateChatDto.userId, req.user.id);
       return chat
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -51,7 +59,7 @@ export class ChatsController {
 
   @Post('/message')
   @UseGuards(AuthGuard)
-  sendMessage(@Body() createMessageDto: createMessageDto, @Request() req) {
+  async sendMessage(@Body() createMessageDto: createMessageDto, @Request() req) {
     try{
       const message = this.chatsService.sendMessage(createMessageDto, req);
       return message
@@ -61,17 +69,17 @@ export class ChatsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     return this.chatsService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateChatDto: UpdateChatDto) {
+  async update(@Param('id') id: string, @Body() updateChatDto: UpdateChatDto) {
     return this.chatsService.update(+id, updateChatDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     return this.chatsService.remove(+id);
   }
 }

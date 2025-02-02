@@ -6,6 +6,7 @@ import { Route } from 'src/routes/entities/route.entity';
 import { Users } from 'src/user/entities/user.entity';
 import { Repository, EntityManager } from 'typeorm';
 import { RouteRequest } from './entities/route-request.entity';
+import { RoutesService } from 'src/routes/routes.service';
 
 @Injectable()
 export class RouteRequestsService {
@@ -16,6 +17,7 @@ export class RouteRequestsService {
     private readonly routesRepository: Repository<Route>,
     @InjectRepository(Users)
     private readonly userRepository: Repository<Users>,
+    private readonly routesService: RoutesService,
     private readonly entityManager: EntityManager,
   ) { }
   async create(createRouteRequestDto: CreateRouteRequestDto, senderId: number) {
@@ -85,11 +87,8 @@ export class RouteRequestsService {
       if (routeRequest.receiver.id !== receiverId) {
         throw new Error('Only the receiver can accept the route request');
       }
-      // ne raboti v momenta
-      const route = routeRequest.route;
-      route.participants.push(routeRequest.sender);
-      routeRequest.route = route;
 
+      await this.routesService.addParticipant({ userId: routeRequest.sender.id, routeId: routeRequest.route.id }, receiverId);
       return await this.remove(id);
       } catch (error) {
       throw new Error(error.message);
