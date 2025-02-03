@@ -20,7 +20,7 @@ export class ChatsService {
     private readonly entityManager: EntityManager
   ) { }
 
-  async create( req: any) {
+  async create(req: any) {
     try {
       const user = await this.userRepository.findOne({
         where: { id: req.user.id },
@@ -81,7 +81,7 @@ export class ChatsService {
     try {
       const chat = await this.chatRepository.findOne({
         where: { id: chatId },
-        relations: { participants: true }, 
+        relations: { participants: true },
       });
       if (!chat) {
         throw new Error('Chat not found');
@@ -126,7 +126,7 @@ export class ChatsService {
     });
     if (!user) {
       throw new Error('User not found');
-    }    
+    }
 
     const isUserInChat = chat.participants.some(
       (participant) => participant.id === req.user.id,
@@ -134,10 +134,10 @@ export class ChatsService {
     if (!isUserInChat) {
       throw new Error('You are not a participant in this chat');
     }
-   
+
     const message = this.messageRepository.create({
       text: text,
-      chat:chat,
+      chat: chat,
       sender: user,
       timestamp: timestamp
     });
@@ -157,7 +157,14 @@ export class ChatsService {
   async getPersonalChats(userId: number) {
     return await this.chatRepository.find({
       where: { participants: { id: userId } },
-      relations: { participants: true },
+      relations: {
+        participants: true, route: {
+          start_location: true,
+          end_location: true,
+          stops: true,
+          creator: true
+        }
+      },
     });
   }
 

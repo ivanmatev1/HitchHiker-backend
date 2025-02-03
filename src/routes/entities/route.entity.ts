@@ -9,25 +9,25 @@ Check('"seats">0')
 export class Route {
     @PrimaryGeneratedColumn()
     id: number;
-    
-    @OneToOne(() => RouteStop,  {cascade: true, onDelete: 'CASCADE'})
+
+    @OneToOne(() => RouteStop, { cascade: true, onDelete: 'CASCADE' })
     @JoinColumn()
     start_location: RouteStop;
 
-    @OneToOne(() => RouteStop, {cascade: true, onDelete: 'CASCADE'})
+    @OneToOne(() => RouteStop, { cascade: true, onDelete: 'CASCADE' })
     @JoinColumn()
     end_location: RouteStop;
 
-    @OneToMany(() => RouteStop, (routeStop) => routeStop.route, {cascade: true, onDelete: 'CASCADE'})
+    @OneToMany(() => RouteStop, (routeStop) => routeStop.route, { cascade: true, onDelete: 'CASCADE' })
     stops: RouteStop[];
 
     // date with hours
     @Column({ type: 'timestamp' })
     date: Date;
 
-    @Column({default: false})
+    @Column({ default: false })
     completed: boolean;
-    
+
     @Column()
     passangers: number;
 
@@ -37,14 +37,14 @@ export class Route {
     @ManyToOne(() => Users, (creator) => creator.createdRoutes)
     creator: Users;
 
-    @OneToOne(() => Chat ,{cascade: true, onDelete: 'CASCADE' })
+    @OneToOne(() => Chat, (chat) => chat.route, { cascade: true, onDelete: 'CASCADE' })
     @JoinColumn()
     chat: Chat;
 
-    @OneToMany(() => RouteRequest, (request) => request.route, {cascade: true, onDelete: 'CASCADE'})
+    @OneToMany(() => RouteRequest, (request) => request.route, { cascade: true, onDelete: 'CASCADE' })
     requests: RouteRequest[];
 
-    constructor(user: Partial<Route>){
+    constructor(user: Partial<Route>) {
         Object.assign(this, user);
     }
 }

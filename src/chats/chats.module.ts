@@ -8,9 +8,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Users } from 'src/user/entities/user.entity';
 import { Message } from './entities/messages.entity';
 import { ChatGateway } from './chat.gateway';
+import { Route } from 'src/routes/entities/route.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Chat, Users, Message]),
+  imports: [TypeOrmModule.forFeature([Chat, Users, Message, Route]),
   JwtModule.registerAsync({
     imports: [ConfigModule],
     useFactory: async (configService: ConfigService) => ({
