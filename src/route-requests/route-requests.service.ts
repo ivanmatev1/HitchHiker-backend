@@ -87,7 +87,6 @@ export class RouteRequestsService {
       if (routeRequest.receiver.id !== receiverId) {
         throw new Error('Only the receiver can accept the route request');
       }
-
       await this.routesService.addParticipant({ userId: routeRequest.sender.id, routeId: routeRequest.route.id }, receiverId);
       return await this.remove(id);
       } catch (error) {

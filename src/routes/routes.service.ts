@@ -130,7 +130,10 @@ export class RoutesService {
         participants: true,
         creator: true,
         chat: true,
-        requests: true
+        requests: {
+          sender: true,
+          receiver: true,
+        }
       },
     });
   }
